@@ -1,5 +1,5 @@
 """
-Pytest configuration and shared fixtures
+Pytest configuration and shared fixtures (Playwright uyumlu)
 """
 import pytest
 import sys
@@ -10,35 +10,40 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)).replace('tests', ''))
 
 from pages.login_page import LoginPage
-from utils.driver_helper import get_chrome_driver
+from utils.driver_helper import get_browser, get_page, close_browser
 import config
 
 
 @pytest.fixture(scope="function")
 def browser():
     """Browser fixture - Test boyunca açık kalır"""
-    driver = get_chrome_driver()
-    driver.implicitly_wait(config.IMPLICIT_WAIT)
-    yield driver
+    browser_instance = get_browser()
+    yield browser_instance
     # Test bittikten sonra browser'ı kapat
-    driver.quit()
+    close_browser(browser_instance)
 
 
 @pytest.fixture(scope="function")
-def logged_in_browser(browser):
+def page(browser):
+    """Page fixture - Her test için yeni bir page"""
+    page_instance = get_page(browser)
+    yield page_instance
+
+
+@pytest.fixture(scope="function")
+def logged_in_page(page):
     """
-    Precondition: Kullanıcı giriş yapmış browser döndürür
-    Login işlemini gerçekleştirir ve browser'ı açık tutar
+    Precondition: Kullanıcı giriş yapmış page döndürür
+    Login işlemini gerçekleştirir ve page'ı açık tutar
     """
-    driver = browser
-    login_page = LoginPage(driver)
+    login_page = LoginPage(page)
     
     print("\n" + "="*60)
     print("PRECONDITION: Login işlemi başlatılıyor...")
     print("="*60)
     
     # Ana sayfaya git
-    driver.get(config.BASE_URL)
+    page.goto(config.BASE_URL)
     print(f"✓ Ana sayfaya gidildi: {config.BASE_URL}")
     time.sleep(2)
     
@@ -69,5 +74,6 @@ def logged_in_browser(browser):
     print("PRECONDITION TAMAMLANDI - Test senaryosu başlıyor...")
     print("="*60 + "\n")
     
-    yield driver
-    # Browser'ı kapatma, bu browser fixture'ı yapacak
+    yield page
+    # Page'ı kapatma, browser fixture'ı yapacak
+
