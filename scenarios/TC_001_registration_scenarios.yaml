@@ -1,0 +1,23 @@
+test_scenarios:
+  registration:
+    - name: "successful_registration"
+      description: "Başarılı kullanıcı kaydı testi"
+      enabled: true
+      page: "RegistrationPage"
+      method: "execute_successful_registration_flow"
+      params:
+        base_url: "https://kamilesor.com"
+      wait_time: 5
+
+    - name: "registration_with_custom_data"
+      description: "Özel verilerle kullanıcı kaydı testi"
+      enabled: true
+      page: "RegistrationPage"
+      method: "execute_registration_flow_with_data"
+      params:
+        first_name: "John"
+        last_name: "Doe"
+        email: "user_{{timestamp}}@test.com"
+        password: "Test@1234"
+        base_url: "https://kamilesor.com"
+      wait_time: 5

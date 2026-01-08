@@ -1,8 +1,8 @@
-# 🧪 Kamile Sor Test Otomasyonu
+# 🧪 Kamile Sor Test Otomasyonu (Playwright)
 
-Selenium, Python ve **YAML-Driven Testing** kullanarak geliştirilmiş kapsamlı test otomasyon framework'ü.
+Playwright, Python ve **YAML-Driven Testing** kullanarak geliştirilmiş kapsamlı test otomasyon framework'ü.
 
-**Sürüm:** 3.0 (YAML-Driven)  
+**Sürüm:** 4.0 (Playwright)  
 **Durum:** ✅ Aktif
 
 ---

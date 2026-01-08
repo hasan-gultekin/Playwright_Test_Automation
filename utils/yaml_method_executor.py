@@ -138,6 +138,8 @@ class YamlMethodExecutor:
             # Sonuç kontrol et
             if isinstance(result, dict):
                 success = result.get('success', False)
+            elif isinstance(result, bool):
+                success = result
             else:
                 success = result is not None
             

@@ -1,8 +1,8 @@
 @echo off
-REM Test Execution Script - Tum testleri calistirir ve rapor olusturur
+REM Test Execution Script - Tum testleri calistirir ve rapor olusturur (Playwright)
 
 echo ========================================
-echo Kamile Sor Test Otomasyonu
+echo Kamile Sor Test Otomasyonu (Playwright)
 echo ========================================
 echo.
 
@@ -18,6 +18,8 @@ echo.
 REM Test raporu klasorunu olustur
 if not exist "test-reports" mkdir test-reports
 
+REM Playwright başlatıcı dosyasını yükle (gerekirse)
+echo Playwright ortami kontrol ediliyor...
 REM Testleri calistir
 echo Testler calistiriliyor...
 echo ----------------------------------------

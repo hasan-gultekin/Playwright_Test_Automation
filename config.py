@@ -1,4 +1,4 @@
-# Test configuration file for Kamile Sor automation tests
+# Test configuration file for Kamile Sor automation tests (Playwright)
 
 BASE_URL = "https://kamilesor.com"
 BROWSER = "chromium"  # chromium, firefox, webkit
@@ -15,5 +15,9 @@ NAVIGATION_TIMEOUT = 30000
 # Login information
 LOGIN_USER = "inuglias@gmail.com"
 LOGIN_PASSWORD = "2534.iollaH"
+
+# Playwright specific settings
+RECORD_VIDEO = False  # Video kayıt et
+RECORD_TRACE = False  # Trace kayıt et (debugging için)
 
 

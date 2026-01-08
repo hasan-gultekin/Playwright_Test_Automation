@@ -26,14 +26,20 @@ def get_browser():
         
         browser_type = config.BROWSER.lower()
         
+        # Browser launch seçenekleri
+        launch_options = {
+            "headless": config.HEADLESS,
+            "slow_mo": config.SLOW_MO  # Debugging için delay ekle
+        }
+        
         if browser_type == "chromium":
-            _browser = _playwright.chromium.launch(headless=config.HEADLESS)
+            _browser = _playwright.chromium.launch(**launch_options)
         elif browser_type == "firefox":
-            _browser = _playwright.firefox.launch(headless=config.HEADLESS)
+            _browser = _playwright.firefox.launch(**launch_options)
         elif browser_type == "webkit":
-            _browser = _playwright.webkit.launch(headless=config.HEADLESS)
+            _browser = _playwright.webkit.launch(**launch_options)
         else:
-            _browser = _playwright.chromium.launch(headless=config.HEADLESS)
+            _browser = _playwright.chromium.launch(**launch_options)
         
         print(f"✓ Browser başlatıldı: {browser_type}")
         return _browser

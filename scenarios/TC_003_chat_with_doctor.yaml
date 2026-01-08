@@ -1,0 +1,23 @@
+test_scenarios:
+  chat:
+    - name: "chat_with_doctor"
+      description: "Doktorla mesaj gönderme testi"
+      enabled: true
+      page: "ChatPage"
+      method: "execute_chat_with_doctor"
+      params:
+        base_url: "https://kamilesor.com"
+        message: "Başımın ön tarafında ve gözlerimde şiddetli bir ağrı var."
+      wait_time: 10
+
+    - name: "chat_with_teacher"
+      description: "Öğretmene mesaj gönderme testi" 
+      enabled: true
+      page: "ChatPage"
+      method: "execute_chat_with_teacher"
+      params:
+        base_url: "{{config.BASE_URL}}"
+        message: "{{ChatPage.MESSAGE_TO_TECHER1}}"
+        second_message: "{{ChatPage.MESSAGE_TO_TECHER2}}"
+        wait_between: 10
+      wait_time: 10

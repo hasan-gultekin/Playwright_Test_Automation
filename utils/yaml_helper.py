@@ -21,56 +21,61 @@ class YamlScenarioLoader:
         
         Args:
             yaml_file_path: YAML dosyasının yolu 
-                          - None ise: proje kök/test_scenarios.yaml kullanır
+                          - None ise: scenarios/ klasöründen senaryoları toplar
                           - Dosya adı ise: scenarios/ klasöründen arar
                           - Tam yol ise: direkt açar
         """
-        if yaml_file_path is None:
-            # Varsayılan: proje kök/test_scenarios.yaml
-            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            yaml_file_path = os.path.join(project_root, "test_scenarios.yaml")
-        else:
-            # Eğer tam yol değilse dosya arama yap
-            if not os.path.isabs(yaml_file_path) and not os.path.exists(yaml_file_path):
-                # scenarios/ klasöründe ara (sadece dosya adı ise)
-                if not yaml_file_path.startswith("scenarios/"):
-                    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-                    scenarios_path = os.path.join(project_root, "scenarios", yaml_file_path)
-                    if os.path.exists(scenarios_path):
-                        yaml_file_path = scenarios_path
-        
         self.yaml_file_path = yaml_file_path
         self.scenarios = {}
         self.load_scenarios()
     
+    def _find_yaml_file(self, yaml_file_path):
+        """YAML dosyasını bulur"""
+        if yaml_file_path is None:
+            return None
+        
+        # Eğer dosya zaten varsa, direkt döndür
+        if os.path.exists(yaml_file_path):
+            return os.path.abspath(yaml_file_path)
+        
+        # Eğer tam yol değilse scenarios/ klasöründe ara
+        if not os.path.isabs(yaml_file_path):
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            
+            # scenarios/ klasöründe ara
+            scenarios_path = os.path.join(project_root, yaml_file_path)
+            if os.path.exists(scenarios_path):
+                return os.path.abspath(scenarios_path)
+            
+            # Sadece dosya adı ise, scenarios/ içinde ara
+            if not yaml_file_path.startswith("scenarios"):
+                scenarios_path = os.path.join(project_root, "scenarios", yaml_file_path)
+                if os.path.exists(scenarios_path):
+                    return os.path.abspath(scenarios_path)
+        
+        return None  # Bulunamıyorsa None döndür
+    
     def load_scenarios(self):
         """YAML dosyasını yükle ve parse et"""
         try:
-            if not os.path.exists(self.yaml_file_path):
-                print(f"❌ YAML dosyası bulunamadı: {self.yaml_file_path}")
-                self.scenarios = {}
+            # Dosya bulma işlemini yap
+            yaml_file = self._find_yaml_file(self.yaml_file_path)
+            
+            # Belirli bir dosya varsa, onu yükle
+            if yaml_file and os.path.exists(yaml_file):
+                print(f"🔍 Yüklenen YAML: {yaml_file}")
+                self._load_yaml_file(yaml_file)
                 return
             
-            print(f"🔍 Yüklenen YAML: {self.yaml_file_path}")
+            # Eğer None veya bulunamadıysa, scenarios/ klasöründeki tüm YAML'ları topla
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            scenarios_dir = os.path.join(project_root, "scenarios")
             
-            with open(self.yaml_file_path, 'r', encoding='utf-8') as file:
-                data = yaml.safe_load(file)
-            
-            if data is None:
-                print("⚠ YAML dosyası boş veya parse hatası")
-                self.scenarios = {}
-                return
-            
-            if 'test_scenarios' in data:
-                self.scenarios = data['test_scenarios']
-                if self.scenarios is None:
-                    self.scenarios = {}
-                else:
-                    print(f"✓ YAML dosyası yüklendi: {self.yaml_file_path}")
-                    enabled_count = len(self._get_all_enabled_scenarios())
-                    print(f"✓ Yüklenen senaryolar: {enabled_count} test")
+            if os.path.exists(scenarios_dir):
+                print(f"🔍 Senaryo dosyaları aranıyor: {scenarios_dir}")
+                self._load_all_yaml_in_directory(scenarios_dir)
             else:
-                print("⚠ YAML dosyasında test_scenarios anahtarı bulunamadı")
+                print(f"❌ Senaryo klasörü bulunamadı: {scenarios_dir}")
                 self.scenarios = {}
                 
         except Exception as e:
@@ -78,6 +83,50 @@ class YamlScenarioLoader:
             import traceback
             traceback.print_exc()
             self.scenarios = {}
+    
+    def _load_yaml_file(self, yaml_file_path):
+        """Tek bir YAML dosyasını yükle"""
+        try:
+            with open(yaml_file_path, 'r', encoding='utf-8') as file:
+                data = yaml.safe_load(file)
+            
+            if data is None:
+                print(f"⚠ YAML dosyası boş: {yaml_file_path}")
+                return
+            
+            # test_scenarios anahtarını ara
+            if 'test_scenarios' in data:
+                self.scenarios.update(data['test_scenarios'])
+                enabled_count = len(self._get_all_enabled_scenarios())
+                print(f"✓ YAML yüklendi: {os.path.basename(yaml_file_path)} ({enabled_count} senaryo)")
+            elif 'scenarios' in data:
+                # Alternatif format: scenarios
+                scenarios_data = data['scenarios']
+                if isinstance(scenarios_data, list):
+                    # Kategori belirlemek için scenario'ların ilk harfine bak
+                    for scenario in scenarios_data:
+                        self.scenarios.setdefault('default', []).append(scenario)
+                    print(f"✓ YAML yüklendi: {os.path.basename(yaml_file_path)}")
+        except Exception as e:
+            print(f"❌ YAML parse hatası ({yaml_file_path}): {str(e)}")
+    
+    def _load_all_yaml_in_directory(self, directory):
+        """Klasördeki tüm YAML dosyalarını yükle"""
+        try:
+            yaml_files = [f for f in os.listdir(directory) if f.endswith('.yaml')]
+            
+            if not yaml_files:
+                print(f"⚠ {directory} klasöründe YAML dosyası bulunamadı")
+                return
+            
+            print(f"📂 Bulundu {len(yaml_files)} YAML dosyası")
+            
+            for yaml_file in sorted(yaml_files):
+                yaml_path = os.path.join(directory, yaml_file)
+                self._load_yaml_file(yaml_path)
+                
+        except Exception as e:
+            print(f"❌ Klasör okuma hatası: {str(e)}")
     
     def get_registration_scenarios(self) -> List[Dict[str, Any]]:
         """

@@ -1,0 +1,21 @@
+test_scenarios:
+  chat:
+    - name: "chat_with_doctor"
+      description: "Doktorla mesaj gönderme testi"
+      enabled: true
+      page: "ChatPage"
+      method: "execute_chat_with_doctor"
+      params:
+        base_url: "https://kamilesor.com"
+        message: "Başımın ön tarafında ve gözlerimde şiddetli bir ağrı var."
+      wait_time: 3
+
+    - name: "chat_with_it_specialist"
+      description: "IT Uzmanıyla mesaj gönderme testi"
+      enabled: true
+      page: "ChatPage"
+      method: "execute_chat_with_it"
+      params:
+        base_url: "https://kamilesor.com"
+        message: "Python'da bir listeyi nasıl tersine çevirebilirim?"
+      wait_time: 3

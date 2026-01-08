@@ -1,16 +1,16 @@
 """
-Specific YAML Test Runner - Belirtilen YAML dosyasındaki senaryoları çalıştırır
+Specific YAML Test Runner - Belirtilen YAML dosyasındaki senaryoları çalıştırır (Playwright)
 """
 
 import sys
 import os
 import argparse
-from selenium.webdriver.support.ui import WebDriverWait
+import time
 
 # Proje kök dizinini Python path'e ekle
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from utils.driver_helper import get_chrome_driver
+from utils.driver_helper import get_browser, get_page, close_browser
 from utils.yaml_helper import YamlScenarioLoader
 from utils.yaml_method_executor import YamlMethodExecutor
 import config
@@ -68,18 +68,18 @@ def run_yaml_scenarios(yaml_file_path):
     print("\n" + "="*80 + "\n")
     
     # Browser başlat
-    driver = None
+    browser = None
+    page = None
     passed = 0
     failed = 0
     results = []
     
     try:
-        driver = get_chrome_driver()
-        driver.implicitly_wait(config.IMPLICIT_WAIT)
-        wait = WebDriverWait(driver, config.EXPLICIT_WAIT)
+        browser = get_browser()
+        page = get_page(browser)
         
         # Executor oluştur
-        executor = YamlMethodExecutor(driver, loader)
+        executor = YamlMethodExecutor(page, loader)
         
         # Her senaryo için test çalıştır
         for scenario in all_scenarios:
@@ -118,8 +118,10 @@ def run_yaml_scenarios(yaml_file_path):
                 })
         
     finally:
-        if driver:
-            driver.quit()
+        if page:
+            page.close()
+        if browser:
+            close_browser(browser)
     
     # Özet Yazdır
     print("\n" + "="*80)
@@ -147,7 +149,7 @@ def run_yaml_scenarios(yaml_file_path):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Belirtilen YAML dosyasındaki senaryoları çalıştırır',
+        description='Belirtilen YAML dosyasındaki senaryoları çalıştırır (Playwright)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Örnekler:

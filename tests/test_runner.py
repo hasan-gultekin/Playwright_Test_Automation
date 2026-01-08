@@ -37,8 +37,14 @@ class TestYamlMethods:
         self.browser = get_browser()
         self.page = get_page(self.browser)
         
-        # YAML loader'ı başlat
+        # YAML loader'ı başlat - scenarios/ klasöründeki tüm YAML'ları otomatik yükle
         self.scenario_loader = load_test_scenarios()
+        
+        # Eğer senaryolar boşsa, uyarı ver
+        if not self.scenario_loader.scenarios:
+            print("\n⚠️  YAML Senaryo Uyarısı:")
+            print("   Senaryolar yüklenmedi veya boş. Lütfen scenarios/ klasöründe YAML dosyaları kontrol edin.")
+            print("   Beklenen dosyalar: TC_001_registration.yaml, TC_002_login.yaml, vb.")
         
         # Method executor'ı başlat
         self.executor = YamlMethodExecutor(self.page, self.scenario_loader)

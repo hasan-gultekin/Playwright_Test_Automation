@@ -1,0 +1,39 @@
+test_scenarios:
+  login:
+    - name: "navigate_to_login_page"
+      description: "login sayfasına gitme testi"
+      enabled: true
+      page: "LoginPage"
+      method: "navigate_to_login_page"
+      wait_time: 5
+
+    - name: "click_login_link"
+      description: "login linkine tıklama testi"
+      enabled: true
+      page: "LoginPage"
+      method: "click_login_link"
+      wait_time: 5
+
+    - name: "fill_login_form"
+      description: "login formunu doldurma testi"
+      enabled: true
+      page: "LoginPage"
+      method: "fill_login_form"
+      params:
+        email: "inuglias@gmail.com"
+        password: "2534.iollaH"
+      wait_time: 5
+
+    - name: "login_submit"
+      description: "Login_formunu gönderme testi"
+      enabled: true
+      page: "LoginPage"
+      method: "submit_login"
+      wait_time: 5
+
+    - name: "verified_login_successful"
+      description: "verified_login_successful testi"
+      enabled: true
+      page: "LoginPage"
+      method: "is_login_successful"
+      wait_time: 5
