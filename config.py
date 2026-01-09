@@ -1,7 +1,6 @@
 # Test configuration file for Kamile Sor automation tests (Playwright)
 
 BASE_URL = "https://kamilesor.com"
-BROWSER = "chromium"  # chromium, firefox, webkit
 HEADLESS = False  # True for headless mode
 VIEWPORT_WIDTH = 1920
 VIEWPORT_HEIGHT = 1080

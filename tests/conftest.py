@@ -1,5 +1,5 @@
 """
-Pytest configuration and shared fixtures (Playwright uyumlu)
+Pytest configuration and shared fixtures (Playwright compatible)
 """
 import pytest
 import sys
@@ -16,16 +16,16 @@ import config
 
 @pytest.fixture(scope="function")
 def browser():
-    """Browser fixture - Test boyunca açık kalır"""
+    """Browser fixture - Stays open throughout the test"""
     browser_instance = get_browser()
     yield browser_instance
-    # Test bittikten sonra browser'ı kapat
+    # Close the browser after the test
     close_browser(browser_instance)
 
 
 @pytest.fixture(scope="function")
 def page(browser):
-    """Page fixture - Her test için yeni bir page"""
+    """Page fixture - New page for each test"""
     page_instance = get_page(browser)
     yield page_instance
 
@@ -33,47 +33,47 @@ def page(browser):
 @pytest.fixture(scope="function")
 def logged_in_page(page):
     """
-    Precondition: Kullanıcı giriş yapmış page döndürür
-    Login işlemini gerçekleştirir ve page'ı açık tutar
+    Precondition: Returns a page with the user logged in
+    Performs the login process and keeps the page open
     """
     login_page = LoginPage(page)
     
     print("\n" + "="*60)
-    print("PRECONDITION: Login işlemi başlatılıyor...")
+    print("PRECONDITION: Login process is starting...")
     print("="*60)
     
-    # Ana sayfaya git
+    # Go to the home page
     page.goto(config.BASE_URL)
-    print(f"✓ Ana sayfaya gidildi: {config.BASE_URL}")
+    print(f"✓ Navigated to home page: {config.BASE_URL}")
     time.sleep(2)
     
-    # Giriş yap linkine tıkla
+    # Click the login link
     login_page.click_login_link()
-    print("✓ Giriş sayfasına gidildi")
+    print("✓ Navigated to login page")
     time.sleep(2)
     
-    # Giriş formunu doldur
+    # Fill the login form
     login_page.fill_login_form(
         config.LOGIN_USER,
         config.LOGIN_PASSWORD
     )
-    print(f"✓ Form dolduruldu (Email: {config.LOGIN_USER})")
+    print(f"✓ Form filled (Email: {config.LOGIN_USER})")
     time.sleep(1)
     
-    # Formu gönder
+    # Submit the form
     login_page.submit_login()
-    print("✓ Form gönderildi")
+    print("✓ Form submitted")
     time.sleep(5)
     
-    # Başarılı giriş doğrulaması
-    assert login_page.is_login_successful(), "Giriş başarısız!"
+    # Successful login verification
+    assert login_page.is_login_successful(), "Login failed!"
     
     current_url = login_page.get_current_url()
-    print(f"✓ Giriş başarılı! URL: {current_url}")
+    print(f"✓ Login successful! URL: {current_url}")
     print("="*60)
-    print("PRECONDITION TAMAMLANDI - Test senaryosu başlıyor...")
+    print("PRECONDITION COMPLETED - Test scenario is starting...")
     print("="*60 + "\n")
     
     yield page
-    # Page'ı kapatma, browser fixture'ı yapacak
+    # Page closing will be handled by the browser fixture
 

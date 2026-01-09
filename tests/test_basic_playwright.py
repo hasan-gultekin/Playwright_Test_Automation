@@ -14,7 +14,7 @@ import config
 
 
 class TestBasicPlaywright:
-    """Playwright kurulumunu doğrulayan basit testler"""
+    """Simple tests to verify Playwright setup"""
     
     @pytest.fixture(autouse=True)
     def setup(self):
@@ -25,27 +25,27 @@ class TestBasicPlaywright:
         close_browser(self.browser)
     
     def test_browser_launched(self):
-        """Browser başarıyla başlatıldı mı?"""
-        assert self.page is not None, "Page oluşturulamadı"
-        print("✅ Browser başarıyla başlatıldı")
+        """Is the browser launched successfully?"""
+        assert self.page is not None, "Page could not be created"
+        print("✅ Browser launched successfully")
     
     def test_navigate_to_base_url(self):
-        """Base URL'ye navigate edilebiliyor mu?"""
+        """Can navigate to the Base URL?"""
         self.page.goto(config.BASE_URL)
         current_url = self.page.url
-        assert config.BASE_URL in current_url, f"URL değişmedi: {current_url}"
-        print(f"✅ {config.BASE_URL}'ye başarıyla gidildi")
+        assert config.BASE_URL in current_url, f"URL did not change: {current_url}"
+        print(f"✅ Successfully navigated to {config.BASE_URL}")
     
     def test_page_title(self):
-        """Sayfa title'ı alınabiliyor mu?"""
+        """Can the page title be retrieved?"""
         self.page.goto(config.BASE_URL)
         title = self.page.title()
-        assert title, "Sayfa title'ı boş"
-        print(f"✅ Sayfa title'ı: {title}")
+        assert title, "Page title is empty"
+        print(f"✅ Page title: {title}")
     
     def test_browser_config(self):
-        """Browser konfigürasyonu doğru mu?"""
-        assert config.BROWSER in ["chromium", "firefox", "webkit"], "Geçersiz browser"
+        """Is the browser configuration correct?"""
+        assert config.BROWSER in ["chromium", "firefox", "webkit"], "Invalid browser"
         print(f"✅ Browser: {config.BROWSER}")
         print(f"✅ Headless: {config.HEADLESS}")
         print(f"✅ Viewport: {config.VIEWPORT_WIDTH}x{config.VIEWPORT_HEIGHT}")

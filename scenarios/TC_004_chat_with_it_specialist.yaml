@@ -1,21 +1,26 @@
 test_scenarios:
   chat:
-    - name: "chat_with_doctor"
-      description: "Doktorla mesaj gönderme testi"
+    - name: "execution_login"
+      description: "Login test for user"
       enabled: true
-      page: "ChatPage"
-      method: "execute_chat_with_doctor"
+      page: "LoginPage"
+      method: "execute_successful_login_flow"
       params:
-        base_url: "https://kamilesor.com"
-        message: "Başımın ön tarafında ve gözlerimde şiddetli bir ağrı var."
-      wait_time: 3
+        base_url: "{{config.BASE_URL}}"
+        email: "{{config.LOGIN_USER}}"
+        password: "{{config.LOGIN_PASSWORD}}"
+      wait_time: 5
 
-    - name: "chat_with_it_specialist"
-      description: "IT Uzmanıyla mesaj gönderme testi"
+    - name: "chat_with_IT_specialist1"
+      description: "Chat with IT specialist test 1"
       enabled: true
       page: "ChatPage"
-      method: "execute_chat_with_it"
-      params:
-        base_url: "https://kamilesor.com"
-        message: "Python'da bir listeyi nasıl tersine çevirebilirim?"
-      wait_time: 3
+      method: "send_message_to_it_specialist1"
+      wait_time: 20
+
+    - name: "chat_with_IT_specialist2"
+      description: "Chat with IT specialist test 2"
+      enabled: true
+      page: "ChatPage"
+      method: "send_message_to_it_specialist2"
+      wait_time: 20

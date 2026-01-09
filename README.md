@@ -1,565 +1,399 @@
-# 🧪 Kamile Sor Test Otomasyonu (Playwright)
+# 🧪 Kamile Sor Test Automation
 
-Playwright, Python ve **YAML-Driven Testing** kullanarak geliştirilmiş kapsamlı test otomasyon framework'ü.
+YAML-driven test automation framework built with Playwright and Python.
 
-**Sürüm:** 4.0 (Playwright)  
-**Durum:** ✅ Aktif
-
----
-
-## 🎯 Ana Özellikler
-
-- ✅ **YAML-Driven Tests** - Testleri YAML'da tanımla, kod yazma!
-- ✅ **Page Object Model** - Sürdürülebilir ve ölçeklenebilir yapı
-- ✅ **Otomatik Action Execution** - navigate, fill_form, submit vb.
-- ✅ **Dinamik Parametreler** - `{{timestamp}}`, `{{date}}`, `{{random}}`
-- ✅ **Assertion Engine** - url_changed, error_message, page_title vb.
-- ✅ **HTML Raporları** - pytest-html ile detaylı raporlar
-- ✅ **Screenshot Yönetimi** - Hata durumlarında otomatik görüntü
-- ✅ **Parametreli Testler** - Aynı senararyoyu farklı datalarla çalıştır
+**Version:** 5.0 (Playwright + YAML Method Executor)  
+**Status:** ✅ Active
 
 ---
 
-## 📁 Proje Yapısı
+## 🎯 Key Features
+
+- ✅ **YAML-Driven Tests** - Define tests in YAML, no coding required
+- ✅ **Page Object Model** - Maintainable and scalable architecture
+- ✅ **Method Execution Engine** - Call page methods directly from YAML
+- ✅ **Playwright** - Modern, fast, and reliable browser automation
+- ✅ **Dynamic Parameters** - `{{config.BASE_URL}}`, `{{config.LOGIN_USER}}`, etc.
+- ✅ **Modular Structure** - Each test scenario in separate YAML file
+- ✅ **Cross-browser** - Chromium, Firefox, WebKit support
+
+---
+
+## 📁 Project Structure
 
 ```
 automation_test_kamilesor/
 │
-├── 📄 test_scenarios.yaml                 ⭐ TEST SENARYOLARı (YAML)
-├── 📄 YAML_DRIVEN_TESTING.md              ⭐ YAML TESTING REHBERI
-├── 📄 REFACTORING_GUIDE.md                ⭐ REFACTORING DETAILS
+├── scenarios/                            # 📝 Test Scenarios (YAML)
+│   ├── TC_001_registration_scenarios.yaml
+│   ├── TC_002_login.yaml
+│   ├── TC_003_chat_with_doctor.yaml
+│   └── TC_004_chat_with_it_specialist.yaml
 │
-├── pages/                                 # Page Object Model
-│   ├── base_page.py                      # Temel class
-│   ├── registration_page.py              # Kayıt sayfası + flow metodları
-│   ├── login_page.py                     # Login sayfası + flow metodları
-│   └── chat_page.py                      # Chat sayfası
+├── pages/                                # 🎭 Page Object Model
+│   ├── __init__.py
+│   ├── base_page.py                     # Base page class (common methods)
+│   ├── login_page.py                    # Login page + flow methods
+│   ├── chat_page.py                     # Chat page + messaging methods
+│   └── registration_page.py             # Registration page
 │
-├── tests/                                 # Test dosyaları
-│   ├── test_1_registration.py            # Registration testleri (YAML + Manual)
-│   ├── test_2_login.py                   # Login testleri (YAML + Manual)
-│   ├── test_3_doctor_chat.py             # Chat testleri
-│   ├── test_yaml_runner.py               # ⭐ GENERIC YAML RUNNER
-│   └── screenshots/
+├── utils/                                # 🔧 Utilities
+│   ├── __init__.py
+│   ├── driver_helper.py                 # Playwright browser management
+│   ├── yaml_helper.py                   # YAML parser & loader
+│   ├── yaml_method_executor.py          # ⭐ Method execution engine
+│   └── test_data_helper.py              # Test data generation
 │
-├── utils/                                 # Yardımcı araçlar
-│   ├── driver_helper.py                  # WebDriver yönetimi
-│   ├── test_data_helper.py               # Test verisi oluşturma
-│   ├── yaml_helper.py                    # YAML parser & loader
-│   └── yaml_action_executor.py           # ⭐ ACTION/ASSERTION ENGINE
+├── tests/                                # 🧪 Test Runner (pytest)
+│   ├── __init__.py
+│   ├── conftest.py                      # Pytest fixtures
+│   └── test_runner.py                   # YAML test runner
 │
-├── config.py                             # Yapılandırma
-├── requirements.txt                      # Bağımlılıklar (PyYAML ✅)
-├── pytest.ini                            # Pytest config
-├── run_tests.bat                         # Test runner script
-├── demo_yaml_runner.py                   # Demo script
-└── test-reports/                         # HTML raporları
+├── config.py                            # ⚙️ Configuration
+├── requirements.txt                     # 📦 Dependencies
+├── pytest.ini                           # Pytest settings
+├── run_specific_yaml.py                 # ⭐ YAML test runner script
+└── README.md                            # This file
 ```
 
 ---
 
-## 🚀 Hızlı Başlangıç
+## 🚀 Quick Start
 
-### 1. Kurulum
+### 1. Requirements
 
-```bash
-# Bağımlılıkları yükle
-py -m pip install -r requirements.txt
+- Python 3.9 or higher
+- pip (Python package manager)
 
-# Mevcut testleri listele
-py -m pytest tests/test_yaml_runner.py --collect-only
-```
-
-### 2. YAML Senaryosu ile Test Çalıştır
+### 2. Installation
 
 ```bash
-# Tüm YAML senaryolarını çalıştır
-py -m pytest tests/test_yaml_runner.py -v -s
+# Install dependencies
+pip3 install -r requirements.txt
 
-# Sadece registration senaryolarını
-py -m pytest tests/test_yaml_runner.py::TestYamlScenarios::test_all_registration_scenarios -v -s
-
-# Sadece login senaryolarını
-py -m pytest tests/test_yaml_runner.py::TestYamlScenarios::test_all_login_scenarios -v -s
-
-# Batch file ile (Windows)
-run_tests.bat
+# Install Playwright browsers
+python3 -m playwright install
 ```
 
-### 3. YAML'da Yeni Senaryo Ekle
+### 3. Configuration
 
-Dosya: `test_scenarios.yaml`
+Configure settings in `config.py`:
+
+```python
+BASE_URL = "https://kamilesor.com"
+BROWSER = "webkit"              # chromium, firefox, webkit
+HEADLESS = False                # True: Headless mode
+LOGIN_USER = "your@email.com"
+LOGIN_PASSWORD = "yourpassword"
+```
+
+### 4. Run Tests
+
+```bash
+# Run a specific YAML scenario
+python3 run_specific_yaml.py scenarios/TC_002_login.yaml
+
+# Run chat scenario
+python3 run_specific_yaml.py scenarios/TC_003_chat_with_doctor.yaml
+
+# Run IT specialist scenario
+python3 run_specific_yaml.py scenarios/TC_004_chat_with_it_specialist.yaml
+```
+
+---
+
+## 📝 YAML Scenario Structure
+
+### Basic Format
+
+```yaml
+test_scenarios:
+  category_name:
+    - name: "scenario_name"
+      description: "Scenario description"
+      enabled: true
+      page: "PageClassName"              # LoginPage, ChatPage, etc.
+      method: "method_name"               # Method to execute
+      params:                             # Method parameters
+        email: "{{config.LOGIN_USER}}"
+        password: "{{config.LOGIN_PASSWORD}}"
+      wait_time: 5                        # Wait time after scenario (seconds)
+```
+
+### Example: Login Scenario
 
 ```yaml
 test_scenarios:
   login:
-    - name: "my_scenario"
-      description: "Benim test senaryom"
+    - name: "successful_login"
+      description: "User successfully logs in"
       enabled: true
-      base_url: "https://kamilesor.com"
-      steps:
-        - action: "navigate"
-          url: "/"
-        - action: "click_login_link"
-        - action: "fill_login_form"
-          email: "user@test.com"
-          password: "Pass123"
-        - action: "submit_login"
-      assertions:
-        - type: "url_changed"
-          expected_url_contains: "/dashboard"
+      page: "LoginPage"
+      method: "execute_successful_login_flow"
+      params:
+        base_url: "{{config.BASE_URL}}"
+        email: "{{config.LOGIN_USER}}"
+        password: "{{config.LOGIN_PASSWORD}}"
       wait_time: 5
 ```
 
-### 4. Test Çalıştır
-
-```bash
-# Yeni senaryo otomatik olarak bulunur ve çalışır
-py -m pytest tests/test_yaml_runner.py -v -s
-```
-
----
-
-## 📊 İki Çalıştırma Yöntemi
-
-### Yöntem 1: YAML-Driven (⭐ YENİ - Önerilen)
-
-**Dosyalar:**
-- `test_scenarios.yaml` - Senaryolar
-- `utils/yaml_action_executor.py` - Engine
-- `tests/test_yaml_runner.py` - Test runner
-
-**Avantaj:**
-- ✅ Kod yazmanız gerekmez
-- ✅ YAML değişimi = Otomatik test güncelleme
-- ✅ Tekrarlı kod yok
-- ✅ Non-technical kullanıma uygun
-
-**Çalıştırma:**
-```bash
-py -m pytest tests/test_yaml_runner.py -v -s
-```
-
----
-
-### Yöntem 2: Manual (Eski)
-
-**Dosyalar:**
-- `tests/test_1_registration.py`
-- `tests/test_2_login.py`
-- `tests/test_3_doctor_chat.py`
-
-**Avantaj:**
-- ✅ Kompleks logik yazabilirsiniz
-- ✅ Detaylı kontrol
-
-**Çalıştırma:**
-```bash
-py -m pytest tests/test_1_registration.py -v -s
-py -m pytest tests/test_2_login.py -v -s
-```
-
----
-
-## 🔧 Mevcut Actions ve Assertions
-
-### Actions (Komutlar)
-```
-✅ navigate(url)                 # URL'ye git
-✅ click_login_link()            # Login linkine tıkla
-✅ click_signup_link()           # Signup linkine tıkla
-✅ fill_login_form(email, password)     # Login formu doldur
-✅ fill_registration_form(first_name, last_name, email, password)  # Reg formu doldur
-✅ submit_login()                # Login gönder
-✅ submit_registration()         # Registration gönder
-```
-
-### Assertions (Doğrulamalar)
-```
-✅ url_changed(expected_url_contains)   # URL değişti mi?
-✅ error_message(expected_text)         # Hata mesajı var mı?
-✅ page_title(expected)                 # Sayfa başlığı doğru mu?
-✅ user_logged_in()                     # Kullanıcı giriş yaptı mı?
-✅ validation_error(expected_text)      # Validasyon hatası var mı?
-```
-
----
-
-## 📚 Dokümantasyon
-
-| Dosya | Açıklama |
-|-------|----------|
-| [YAML_DRIVEN_TESTING.md](YAML_DRIVEN_TESTING.md) | ⭐ YAML testing rehberi |
-| [REFACTORING_GUIDE.md](REFACTORING_GUIDE.md) | Refactoring detayları |
-| [REFACTORING_SUMMARY.md](REFACTORING_SUMMARY.md) | Özet |
-
----
-
-## 💡 Örnek Senaryolar
-
-### Örnek 1: Başarılı Giriş
+### Example: Chat Scenario
 
 ```yaml
-- name: "successful_login"
-  steps:
-    - action: "navigate"
-      url: "/"
-    - action: "click_login_link"
-    - action: "fill_login_form"
-      email: "test@test.com"
-      password: "Test123"
-    - action: "submit_login"
-  assertions:
-    - type: "url_changed"
-      expected_url_contains: "/dashboard"
+test_scenarios:
+  chat:
+    - name: "chat_with_doctor"
+      description: "Chat with doctor test"
+      enabled: true
+      page: "ChatPage"
+      method: "send_message_to_doctor1"
+      wait_time: 20
 ```
 
-### Örnek 2: Dinamik Email ile Kayıt
+---
+
+## 🎭 Page Object Model
+
+### BasePage
+
+Base class inherited by all page classes. Contains common methods:
+
+- `click_element(selector)` - Click element
+- `input_text(selector, text)` - Input text
+- `is_element_visible(selector)` - Check if element is visible
+- `wait_for_selector(selector)` - Wait for element
+- `navigate(url)` - Navigate to URL
+- `take_screenshot(filename)` - Take screenshot
+
+### LoginPage
+
+Login page operations:
+
+```python
+def execute_successful_login_flow(self, email, password, base_url):
+    """Execute successful login flow"""
+    self.page.goto(base_url)
+    self.click_login_link()
+    self.fill_login_form(email, password)
+    self.submit_login()
+    return self.is_login_successful()
+```
+
+### ChatPage
+
+Chat page operations:
+
+```python
+def send_message_to_doctor1(self, message: str = None):
+    """Send first message to doctor"""
+    self.click_doctor_button()
+    msg = message if message else self.MESSAGE_TO_DOCTOR1
+    self.enter_message(msg)
+    self.click_send_button()
+    return True
+```
+
+---
+
+## 🔧 YAML Method Executor
+
+`yaml_method_executor.py` - Dynamically executes methods defined in YAML.
+
+### How It Works
+
+1. Get scenario info from YAML (page, method, params)
+2. Dynamically import page class
+3. Create page instance
+4. Execute method with parameters
+5. Evaluate result (success/failure)
+
+### Dynamic Parameters
 
 ```yaml
-- name: "unique_registration"
-  steps:
-    - action: "navigate"
-      url: "/"
-    - action: "click_signup_link"
-    - action: "fill_registration_form"
-      email: "user_{{timestamp}}@test.com"  # 🔄 Dinamik!
-      first_name: "John"
-      last_name: "Doe"
-      password: "Pass@1234"
-    - action: "submit_registration"
+params:
+  base_url: "{{config.BASE_URL}}"          # Get value from config.py
+  email: "{{config.LOGIN_USER}}"
+  password: "{{config.LOGIN_PASSWORD}}"
+  message: "{{ChatPage.MESSAGE_TO_DOCTOR1}}" # Get from page constant
 ```
 
 ---
 
-## 🎯 Dinamik Parametreler
+## 📊 Test Results
 
-YAML'da şu parametreleri kullanabilirsiniz:
+After test completion, detailed summary is displayed:
 
-| Parametre | Örnek | Açıklama |
-|-----------|-------|----------|
-| `{{timestamp}}` | `user_20231225123045@test.com` | Geçerli timestamp |
-| `{{date}}` | `user_20231225@test.com` | Geçerli tarih |
-| `{{random}}` | `user_45678@test.com` | Rastgele sayı |
+```
+================================================================================
+📊 TEST SUMMARY
+================================================================================
+✅ Passed: 2
+❌ Failed: 0
+📋 Total: 2
+
+--------------------------------------------------------------------------------
+Detailed Results:
+--------------------------------------------------------------------------------
+
+✅ execution_login
+   Status: PASSED
+   Message: Scenario successful: execution_login
+
+✅ chat_with_doctor1
+   Status: PASSED
+   Message: Scenario successful: chat_with_doctor1
+```
 
 ---
 
-## 📋 Test Çalıştırma Seçenekleri
+## 🛠️ Adding New Scenarios
+
+### 1. Create Page Method
+
+```python
+# pages/chat_page.py
+def send_message_to_teacher(self, message: str = None):
+    """Send message to teacher"""
+    self.click_teacher_button()
+    msg = message if message else self.MESSAGE_TO_TECHER1
+    self.enter_message(msg)
+    self.click_send_button()
+    return True  # Return success status
+```
+
+### 2. Add YAML Scenario
+
+```yaml
+# scenarios/TC_005_chat_with_teacher.yaml
+test_scenarios:
+  chat:
+    - name: "execution_login"
+      description: "User login"
+      enabled: true
+      page: "LoginPage"
+      method: "execute_successful_login_flow"
+      params:
+        base_url: "{{config.BASE_URL}}"
+        email: "{{config.LOGIN_USER}}"
+        password: "{{config.LOGIN_PASSWORD}}"
+      wait_time: 5
+
+    - name: "chat_with_teacher"
+      description: "Chat with teacher"
+      enabled: true
+      page: "ChatPage"
+      method: "send_message_to_teacher"
+      wait_time: 20
+```
+
+### 3. Run Test
 
 ```bash
-# Tüm YAML testleri
-py -m pytest tests/test_yaml_runner.py -v -s
-
-# Sadece registration
-py -m pytest tests/test_yaml_runner.py::TestYamlScenarios::test_all_registration_scenarios -v -s
-
-# Sadece login
-py -m pytest tests/test_yaml_runner.py::TestYamlScenarios::test_all_login_scenarios -v -s
-
-# Parametreli testler (her senaryo ayrı test)
-py -m pytest tests/test_yaml_runner.py::TestYamlScenarios::test_login_scenarios_parametrized -v -s
-
-# Kategori bazlı
-py -m pytest tests/test_yaml_runner.py::TestYamlScenariosByCategory -v -s
-
-# HTML rapor ile
-py -m pytest tests/test_yaml_runner.py -v -s --html=test-reports/report.html --self-contained-html
-
-# Tüm testler (manual + YAML)
-py -m pytest tests/ -v -s
+python3 run_specific_yaml.py scenarios/TC_005_chat_with_teacher.yaml
 ```
 
 ---
 
-## 🔍 Test Raporu
+## 🎯 Current Test Scenarios
 
-Testler bittiğinde `test-reports/test-report.html` dosyasında HTML rapor oluşturulur.
-
-```bash
-# Raporu aç
-start test-reports/test-report.html
-```
+| Test File | Description | Scenarios |
+|-----------|-------------|-----------|
+| `TC_001_registration_scenarios.yaml` | Registration tests | User registration |
+| `TC_002_login.yaml` | Login tests | Successful login |
+| `TC_003_chat_with_doctor.yaml` | Doctor chat tests | 2 message scenarios |
+| `TC_004_chat_with_it_specialist.yaml` | IT specialist chat tests | 2 message scenarios |
 
 ---
 
 ## 🐛 Troubleshooting
 
-### pytest bulunamıyor
-```bash
-py -m pip install -r requirements.txt
-py -m pytest tests/ -v -s
-```
-
-### YAML dosyası bulunamıyor
-`test_scenarios.yaml` dosyasının proje kök dizininde olduğundan emin olun.
-
-### Action/Assertion hatası
-`utils/yaml_action_executor.py` dosyasında action adını kontrol edin.
-
----
-
-## 🎓 Test Akışı
-
-```
-1. test_scenarios.yaml dosyasını oku
-                ↓
-2. YAML ActionExecutor başlat
-                ↓
-3. Her adım için action handler'ı çalıştır
-   - navigate → driver.get()
-   - fill_form → page.fill_form()
-   - submit → page.submit()
-                ↓
-4. Assertions execute et
-   - url_changed → driver.current_url kontrol et
-   - error_message → page_source kontrol et
-                ↓
-5. Sonuç döndür (success/failure)
-                ↓
-6. Rapor oluştur
-```
-
----
-
-## 📞 Hızlı Referans
+### Playwright Browsers Not Installed
 
 ```bash
-# YAML helper test et
-python utils/yaml_helper.py
-
-# Demo çalıştır
-python demo_yaml_runner.py
-
-# Tüm testleri çalıştır
-run_tests.bat
-
-# Belirli test
-py -m pytest tests/test_yaml_runner.py::TestYamlScenariosByCategory::test_successful_login -v -s
+python3 -m playwright install
 ```
+
+### Element Not Found
+
+- Check locators in pages/*.py
+- Increase timeout values in `config.py`
+- Disable headless mode (`HEADLESS = False`)
+
+### YAML Parse Error
+
+- Check YAML indentation (use 2 spaces)
+- Ensure category name is correct (`chat:`, `login:`, etc.)
+
+### Method Not Found Error
+
+- Ensure page class name is correct (e.g., `LoginPage`)
+- Check that method is defined in the page class
+- Ensure method returns `True`
 
 ---
 
-## ✨ Geliştirilecek Alanlar
+## 📚 Technologies Used
 
-- [ ] Database testleri ekle
-- [ ] Performance testleri ekle
-- [ ] Parallel execution
-- [ ] Jenkins integration
-- [ ] Slack notifications
-- [ ] Video recording
+- **Python 3.9+** - Programming language
+- **Playwright** - Browser automation
+- **PyYAML** - YAML parser
+- **pytest** - Test framework (optional)
 
 ---
 
-## 📦 Bağımlılıklar
+## 🔍 Playwright vs Selenium
 
-```
-selenium==4.15.2
-pytest==7.4.3
-webdriver-manager==4.0.1
-pytest-html==4.1.1
-pytest-metadata==3.1.1
-PyYAML==6.0.1
+| Feature | Playwright | Selenium |
+|---------|-----------|----------|
+| Speed | ⚡ Very Fast | 🐢 Medium |
+| Modern API | ✅ Yes | ❌ No |
+| Auto-wait | ✅ Yes | ❌ Manual |
+| Cross-browser | ✅ 3 Engines | ✅ Multiple |
+| Headless | ✅ Native | ⚠️ Limited |
+| Screenshot | ✅ Advanced | ⚠️ Basic |
+
+---
+
+## 📞 Quick Reference
+
+```bash
+# Install all dependencies
+pip3 install -r requirements.txt
+
+# Install Playwright browsers
+python3 -m playwright install
+
+# Run specific scenario
+python3 run_specific_yaml.py scenarios/TC_002_login.yaml
+
+# Run all tests (with pytest)
+pytest tests/test_runner.py -v -s
+
+# Edit config file
+nano config.py
 ```
 
 ---
 
-## 👤 Katkıda Bulunma
+## 🤝 Contributing
 
-Yeni feature'lar veya bug fix'leri için pull request gönderin.
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Create Pull Request
 
 ---
 
-**Sürüm:** 3.0  
-**Son Güncelleme:** Aralık 2025  
-**Status:** ✅ Aktif & Maintaining
+## 📄 License
 
-- Python 3.8 veya üzeri
-- Google Chrome tarayıcı
-- ChromeDriver (otomatik olarak indirilir)
+This project is developed for testing and educational purposes.
 
-## 🔧 Kurulum
+---
 
-### 1. Projeyi Klonlayın
+**Version:** 5.0  
+**Last Updated:** January 2026  
+**Status:** ✅ Active & Maintaining
 
-```bash
-git clone https://github.com/hasan-gultekin/automation_test_kamilesor.git
-cd automation_test_kamilesor
-```
-
-### 2. Sanal Ortam Oluşturun (Önerilen)
-
-```bash
-python -m venv venv
-venv\Scripts\activate  # Windows
-# veya
-source venv/bin/activate  # Linux/Mac
-```
-
-### 3. Bağımlılıkları Yükleyin
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Yapılandırma Dosyasını Ayarlayın
-
-`config.example.py` dosyasını `config.py` olarak kopyalayın ve gerekli ayarları yapın:
-
-```bash
-copy config.example.py config.py  # Windows
-# veya
-cp config.example.py config.py    # Linux/Mac
-```
-
-## 🎯 Testleri Çalıştırma
-
-### Windows'ta Otomatik Çalıştırma
-
-**Tüm testleri çalıştır:**
-```bash
-run_tests.bat
-```
-
-<<<<<<< HEAD
-**Belirli bir testi çalıştır:**
-```bash
-run_specific_test.bat
-```
-=======
-**Tüm testleri çalıştır ve rapor oluştur:**
-```bash
-run_tests.bat
-```
-
-### 3. Yapılandırma
->>>>>>> e51fda69afa28ad076710e16fae88977d27bb905
-
-### Manuel Çalıştırma
-
-**Tüm testleri çalıştır:**
-```bash
-pytest tests/ -v -s --html=test-reports/test-report.html --self-contained-html
-```
-
-**Sadece kayıt testlerini çalıştır:**
-```bash
-pytest tests/test_1_registration.py -v -s
-```
-
-**Sadece login testlerini çalıştır:**
-```bash
-pytest tests/test_2_login.py -v -s
-```
-
-**Sadece chat testlerini çalıştır:**
-```bash
-pytest tests/test_3_doctor_chat.py -v -s
-```
-
-## 📊 Test Raporları
-
-Test çalıştırıldıktan sonra HTML raporu `test-reports/test-report.html` dosyasında oluşturulur. Bu rapor şunları içerir:
-
-- Test sonuçları (Pass/Fail)
-- Test süresi
-- Hata mesajları
-- Screenshot'lar (başarısız testler için)
-
-## 🏗️ Page Object Model (POM)
-
-Proje, Page Object Model tasarım desenini kullanır:
-
-- **base_page.py**: Tüm sayfa sınıflarının miras aldığı temel sınıf
-- **registration_page.py**: Kayıt sayfası işlemleri
-- **login_page.py**: Giriş sayfası işlemleri
-- **chat_page.py**: Chat sayfası işlemleri
-
-### Örnek Kullanım
-
-```python
-from pages.login_page import LoginPage
-
-def test_login(driver):
-    login_page = LoginPage(driver)
-    login_page.login("user@example.com", "password123")
-    assert login_page.is_login_successful()
-```
-
-## 🛠️ Yapılandırma
-
-`config.py` dosyasında aşağıdaki ayarları değiştirebilirsiniz:
-
-```python
-BASE_URL = "https://kamilesor.com"
-BROWSER = "chrome"              # chrome, firefox, edge
-IMPLICIT_WAIT = 10              # Saniye
-EXPLICIT_WAIT = 20              # Saniye
-HEADLESS = False                # True: Tarayıcı görünmeden çalışır
-SCREENSHOT_ON_FAILURE = True    # Hata durumunda screenshot al
-```
-
-## 🔍 Test Verileri
-
-Test verileri dinamik olarak `utils/test_data_helper.py` kullanılarak oluşturulur:
-
-- Benzersiz email adresleri
-- Rastgele kullanıcı adları
-- Güvenli şifreler
-- Telefon numaraları
-
-## 📝 Test Senaryoları
-
-### 1. Kayıt Testleri (`test_1_registration.py`)
-- Yeni kullanıcı kaydı
-- Form validasyonu
-- Başarılı kayıt doğrulama
-
-### 2. Login Testleri (`test_2_login.py`)
-- Geçerli kimlik bilgileriyle giriş
-- Geçersiz kimlik bilgileriyle giriş
-- Şifre hatırlatma
-
-### 3. Chat Testleri (`test_3_doctor_chat.py`)
-- Doktor ile chat başlatma
-- Mesaj gönderme
-- Chat geçmişi kontrolü
-
-## 🐛 Sorun Giderme
-
-### ChromeDriver Hatası
-```
-webdriver-manager otomatik olarak driver'ı indirir.
-İnternet bağlantınızı kontrol edin.
-```
-
-### Element Bulunamadı
-```
-- Locator'ları kontrol edin
-- Bekleme sürelerini artırın (config.py)
-- Sayfanın tamamen yüklendiğinden emin olun
-```
-
-### Import Hataları
-```bash
-# Python path'ini kontrol edin
-set PYTHONPATH=%PYTHONPATH%;%CD%  # Windows
-export PYTHONPATH=$PYTHONPATH:$(pwd)  # Linux/Mac
-```
-
-## 🤝 Katkıda Bulunma
-
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Değişikliklerinizi commit edin (`git commit -m 'Add some amazing feature'`)
-4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
-5. Pull Request oluşturun
-
-## 📄 Lisans
-
-Bu proje test ve eğitim amaçlı geliştirilmiştir.
-
-## 📧 İletişim
-
-Hasan Gültekin - [@hasan-gultekin](https://github.com/hasan-gultekin)
-
-Proje Linki: [https://github.com/hasan-gultekin/automation_test_kamilesor](https://github.com/hasan-gultekin/automation_test_kamilesor)
+**Developer:** Hasan Gültekin  
+**Project:** Kamile Sor Test Automation Framework

@@ -1,5 +1,5 @@
 """
-Base Page - Tüm sayfa objelerinin miras alacağı temel sınıf (Playwright uyumlu)
+Base Page - All pages base class (Playwright compatible)
 """
 from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError
 import config
@@ -7,11 +7,11 @@ import time
 
 
 class BasePage:
-    """Tüm sayfa objelerinin miras alacağı temel sınıf"""
+    """Base class for all page objects"""
     
     def __init__(self, page: Page):
         """
-        BasePage'i başlat
+        Initialize BasePage
         
         Args:
             page: Playwright Page instance
@@ -22,10 +22,10 @@ class BasePage:
     
     def find_element(self, selector: str):
         """
-        Element bul
+        Find element
         
         Args:
-            selector: CSS selector veya XPath
+            selector: CSS selector or XPath
             
         Returns:
             Locator: Playwright Locator
@@ -35,52 +35,52 @@ class BasePage:
             locator.wait_for(timeout=config.EXPLICIT_WAIT)
             return locator
         except PlaywrightTimeoutError:
-            print(f"❌ Element bulunamadı: {selector}")
+            print(f"❌ Element not found: {selector}")
             raise
     
     def click_element(self, selector: str):
         """
-        Element'e tıkla
+        Click element
         
         Args:
-            selector: CSS selector veya XPath
+            selector: CSS selector or XPath
         """
         try:
             locator = self.page.locator(selector)
             locator.wait_for(state="visible", timeout=config.EXPLICIT_WAIT)
             locator.click()
-            print(f"✓ Element'e tıklandı: {selector}")
+            print(f"✓ Element clicked: {selector}")
         except PlaywrightTimeoutError:
-            print(f"❌ Element tıklanamadı: {selector}")
+            print(f"❌ Element could not be clicked: {selector}")
             raise
     
     def input_text(self, selector: str, text: str):
         """
-        Input alanına text gir
+        Input text into input field
         
         Args:
-            selector: CSS selector veya XPath
-            text: Girilecek metin
+            selector: CSS selector or XPath
+            text: Text to input
         """
         try:
             locator = self.page.locator(selector)
             locator.wait_for(state="visible", timeout=config.EXPLICIT_WAIT)
             locator.clear()
             locator.fill(text)
-            print(f"✓ Text girildi: {selector}")
+            print(f"✓ Text inputted: {selector}")
         except PlaywrightTimeoutError:
-            print(f"❌ Input alanı bulunamadı: {selector}")
+            print(f"❌ Input field not found: {selector}")
             raise
     
     def get_text(self, selector: str) -> str:
         """
-        Element'in text'ini al
+        Get text of element
         
         Args:
-            selector: CSS selector veya XPath
+            selector: CSS selector or XPath
             
         Returns:
-            str: Element'in metni
+            str: Text of the element
         """
         try:
             locator = self.page.locator(selector)
@@ -88,18 +88,18 @@ class BasePage:
             text = locator.text_content()
             return text or ""
         except PlaywrightTimeoutError:
-            print(f"❌ Element'in metni alınamadı: {selector}")
+            print(f"❌ Could not get text of element: {selector}")
             raise
     
     def is_element_visible(self, selector: str) -> bool:
         """
-        Element görünür mü kontrol et
+        Check if element is visible
         
         Args:
-            selector: CSS selector veya XPath
+            selector: CSS selector or XPath
             
         Returns:
-            bool: Element görünür mü
+            bool: Is the element visible
         """
         try:
             locator = self.page.locator(selector)
@@ -110,71 +110,71 @@ class BasePage:
     
     def wait_for_selector(self, selector: str, timeout: int = None):
         """
-        Selector'un görünür olmasını bekle
+        Wait for selector to be visible
         
         Args:
-            selector: CSS selector veya XPath
-            timeout: Bekleme süresi (ms)
+            selector: CSS selector or XPath
+            timeout: Wait time (ms)
         """
         wait_timeout = timeout or config.EXPLICIT_WAIT
         try:
             self.page.wait_for_selector(selector, timeout=wait_timeout)
-            print(f"✓ Element beklendi: {selector}")
+            print(f"✓ Element waited for: {selector}")
         except PlaywrightTimeoutError:
-            print(f"❌ Element zaman aşımı: {selector}")
+            print(f"❌ Element timeout: {selector}")
             raise
     
     def wait_for_url(self, url: str, timeout: int = None):
         """
-        URL değişimini bekle
+        Wait for URL change
         
         Args:
-            url: Beklenen URL (regex veya string)
-            timeout: Bekleme süresi (ms)
+            url: Expected URL (regex or string)
+            timeout: Wait time (ms)
         """
         wait_timeout = timeout or config.NAVIGATION_TIMEOUT
         try:
             self.page.wait_for_url(url, timeout=wait_timeout)
-            print(f"✓ URL değişimi beklendi: {url}")
+            print(f"✓ URL change waited for: {url}")
         except PlaywrightTimeoutError:
-            print(f"❌ URL değişimi zaman aşımı: {url}")
+            print(f"❌ URL change timeout: {url}")
             raise
     
     def get_current_url(self) -> str:
         """
-        Mevcut URL'i al
+        Get current URL
         
         Returns:
-            str: Mevcut URL
+            str: Current URL
         """
         return self.page.url
     
     def navigate(self, url: str):
         """
-        Sayfa'ya git
+        Navigate to page
         
         Args:
-            url: Gidilecek URL
+            url: URL to navigate to
         """
         self.page.goto(url)
-        print(f"✓ {url} adresine gidildi")
+        print(f"✓ Navigated to: {url}")
     
     def take_screenshot(self, filename: str):
         """
-        Ekran görüntüsü al
+        Take screenshot
         
         Args:
-            filename: Dosya adı
+            filename: File name
         """
         self.page.screenshot(path=filename)
-        print(f"✓ Ekran görüntüsü alındı: {filename}")
+        print(f"✓ Screenshot taken: {filename}")
     
     def wait(self, seconds: float):
         """
-        Belirtilen süre bekle
+        Wait for specified time
         
         Args:
-            seconds: Saniye
+            seconds: Seconds
         """
         time.sleep(seconds)
-        print(f"⏳ {seconds} saniye beklendi")
+        print(f"⏳ {seconds} seconds waited")

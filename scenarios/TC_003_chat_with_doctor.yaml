@@ -1,23 +1,26 @@
 test_scenarios:
   chat:
-    - name: "chat_with_doctor"
-      description: "Doktorla mesaj gönderme testi"
+    - name: "execution_login"
+      description: "Login test for user"
       enabled: true
-      page: "ChatPage"
-      method: "execute_chat_with_doctor"
-      params:
-        base_url: "https://kamilesor.com"
-        message: "Başımın ön tarafında ve gözlerimde şiddetli bir ağrı var."
-      wait_time: 10
-
-    - name: "chat_with_teacher"
-      description: "Öğretmene mesaj gönderme testi" 
-      enabled: true
-      page: "ChatPage"
-      method: "execute_chat_with_teacher"
+      page: "LoginPage"
+      method: "execute_successful_login_flow"
       params:
         base_url: "{{config.BASE_URL}}"
-        message: "{{ChatPage.MESSAGE_TO_TECHER1}}"
-        second_message: "{{ChatPage.MESSAGE_TO_TECHER2}}"
-        wait_between: 10
-      wait_time: 10
+        email: "{{config.LOGIN_USER}}"
+        password: "{{config.LOGIN_PASSWORD}}"
+      wait_time: 5
+
+    - name: "chat_with_doctor1"
+      description: "Chat with doctor test 1"
+      enabled: true
+      page: "ChatPage"
+      method: "send_message_to_doctor1"
+      wait_time: 20
+
+    - name: "chat_with_doctor2"
+      description: "Chat with doctor test 2"
+      enabled: true
+      page: "ChatPage"
+      method: "send_message_to_doctor2"
+      wait_time: 20

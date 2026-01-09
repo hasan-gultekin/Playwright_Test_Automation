@@ -121,10 +121,14 @@ class YamlMethodExecutor:
             
             # Metod var mı kontrol et
             if not hasattr(page_instance, method_name):
+                # Debug: Tüm metodları listele
+                available_methods = [m for m in dir(page_instance) if not m.startswith('_')]
+                print(f"❌ Metod '{method_name}' bulunamadı!")
+                print(f"   Mevcut metodlar: {', '.join(available_methods)}")
                 return {
                     "success": False,
                     "scenario": scenario_name,
-                    "message": f"Metod bulunamadı: {page_name}.{method_name}()"
+                    "message": f"Metod bulunamadı: {page_name}.{method_name}(). Mevcut: {', '.join(available_methods[:5])}"
                 }
             
             # Metodu çağır

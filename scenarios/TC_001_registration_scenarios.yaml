@@ -1,7 +1,7 @@
 test_scenarios:
   registration:
     - name: "successful_registration"
-      description: "Başarılı kullanıcı kaydı testi"
+      description: "Successful user registration test"
       enabled: true
       page: "RegistrationPage"
       method: "execute_successful_registration_flow"
@@ -10,7 +10,7 @@ test_scenarios:
       wait_time: 5
 
     - name: "registration_with_custom_data"
-      description: "Özel verilerle kullanıcı kaydı testi"
+      description: "User registration test with custom data"
       enabled: true
       page: "RegistrationPage"
       method: "execute_registration_flow_with_data"

@@ -1,3 +1,3 @@
 """
-Pages package - Page Object Model dosyaları
+Pages package - Page objects for the application
 """

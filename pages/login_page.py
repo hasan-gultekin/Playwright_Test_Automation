@@ -1,5 +1,5 @@
 """
-Login Page - Giriş sayfası (Playwright)
+Login Page - Login page (Playwright)
 """
 from playwright.sync_api import Page
 from pages.base_page import BasePage
@@ -15,36 +15,68 @@ class LoginPage(BasePage):
     PASSWORD_INPUT = "input[name='password']"
     SUBMIT_BUTTON = "button[type='submit']"
     BASE_URL = "https://www.kamilesor.com"
-    LOGIN_VERIFICATION_ELEMENT = "text=Hesabım"  # Giriş sonrası görünen bir element
+    LOGIN_VERIFICATION_ELEMENT = "text=Hesabım"  # Element visible after login
     
     def __init__(self, page: Page):
         super().__init__(page)
 
     def navigate_to_login_page(self):
-        """Giriş sayfasına git"""
+        """Navigate to the login page"""
         self.page.goto(f"{self.BASE_URL}")
-        print(f"✓ Login sayfasına gidildi: {self.BASE_URL}")
+        print(f"✓ Navigated to login page: {self.BASE_URL}")
         return True
     
     def click_login_link(self):
-        """Giriş yap linkine tıkla"""
+        """Click the login link"""
         self.click_element(self.LOGIN_LINK)
         return True
 
     
     def fill_login_form(self, email, password):
-        """Giriş formunu doldur"""
+        """Fill in the login form"""
         self.input_text(self.EMAIL_INPUT, email)
         self.input_text(self.PASSWORD_INPUT, password)
         return True
     
     def submit_login(self):
-        """Giriş formunu gönder"""
+        """Submit the login form"""
         self.click_element(self.SUBMIT_BUTTON)
         return True
     
     def is_login_successful(self):
-        """Giriş başarılı mı kontrol et """
+        """Check if login was successful"""
         result = self.is_element_visible(self.LOGIN_VERIFICATION_ELEMENT)
         return result
+    
+    def execute_successful_login_flow(self, email, password, base_url="https://kamilesor.com"):
+        """
+        Verifies successful login flow.
+        
+        Steps:
+        1. Go to the homepage
+        2. Click the login link
+        3. Fill in the login form
+        4. Submit the login form
+        5. Verify that login was successful
+        """
+        self.page.goto(f"{base_url}")
+        print(f"✓ Navigated to homepage: {base_url}")
+        
+        self.click_login_link()
+        print("✓ Clicked login link")
+        
+        self.fill_login_form(email, password)
+        print(f"✓ Filled login form: {email} / {'*' * len(password)}")
+        
+        self.submit_login()
+        print("✓ Submitted login form")
+        
+        time.sleep(2)  # Short wait for page to load
+        
+        if self.is_login_successful():
+            print("✓ Login successful!")
+            return True
+        else:
+            print("❌ Login failed!")
+            return False
     
